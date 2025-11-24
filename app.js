@@ -51,12 +51,14 @@ form.addEventListener("submit", async (e) => {
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   };
 
-  // Firestore に追加
-  await db.collection(COLLECTION).add(record);
-
-  // 再描画
-  await renderTable();
-  form.reset();
+  try {
+    await db.collection(COLLECTION).add(record);
+    await renderTable();
+    form.reset();
+  } catch (err) {
+    console.error("保存エラー:", err);
+    alert("保存に失敗しました。ネットワークやFirestoreの設定を確認してください。");
+  }
 });
 
 // Firestore からデータを読み込んでテーブルを描画する
@@ -98,3 +100,4 @@ async function renderTable() {
     });
   });
 }
+
