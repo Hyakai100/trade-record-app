@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>投資取引記録アプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>投資取引記録</h1>
+
+  <form id="trade-form">
+    <div class="field">
+      <label>銘柄 / シンボル</label>
+      <input type="text" id="symbol" required>
+    </div>
+    <div class="field">
+      <label>売買区分</label>
+      <select id="side" required>
+        <option value="buy">買い</option>
+        <option value="sell">売り</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>数量</label>
+      <input type="number" id="quantity" required min="1" step="1">
+    </div>
+    <div class="field">
+      <label>価格</label>
+      <input type="number" id="price" required step="0.01">
+    </div>
+    <div class="field">
+      <label>取引日</label>
+      <input type="date" id="date" required>
+    </div>
+    <button type="submit">登録</button>
+  </form>
+
+  <h2>記録一覧</h2>
+  <table id="trade-table">
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>銘柄</th>
+        <th>区分</th>
+        <th>数量</th>
+        <th>価格</th>
+        <th>削除</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>
