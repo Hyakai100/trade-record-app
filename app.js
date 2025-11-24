@@ -1,5 +1,4 @@
 // ===== Firebase 初期化 =====
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBSPjdNc8NDSZxrnVRMzW2atJ_EBjLGAIE",
   authDomain: "trade-record-app.firebaseapp.com",
@@ -12,19 +11,31 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const COLLECTION = "trades"; // コレクション名（自由に変えてOK）
+const COLLECTION = "trades"; // コレクション名
 
-// ===== DOM 要素の取得 =====
-const form = document.getElementById("trade-form");
-const tableBody = document.querySelector("#trade-table tbody");
+// フォームやテーブルの参照用（あとで代入する）
+let form;
+let tableBody;
 
-// ページ読み込み時に Firestore からデータを取得して表示
+// DOM が読み込まれてから初期化
 document.addEventListener("DOMContentLoaded", () => {
+  form = document.getElementById("trade-form");
+  tableBody = document.querySelector("#trade-table tbody");
+
+  if (!form || !tableBody) {
+    console.error("フォームまたはテーブルが見つかりません");
+    return;
+  }
+
+  // 初期表示
   renderTable();
+
+  // フォーム送信イベント
+  form.addEventListener("submit", onSubmit);
 });
 
-// フォーム送信イベント
-form.addEventListener("submit", async (e) => {
+// フォーム送信時の処理
+async function onSubmit(e) {
   e.preventDefault();
 
   const symbol = document.getElementById("symbol").value.trim();
@@ -37,7 +48,10 @@ form.addEventListener("submit", async (e) => {
   const good = document.getElementById("good").value.trim();
   const bad = document.getElementById("bad").value.trim();
 
-  if (!symbol || !date) return;
+  if (!symbol || !date) {
+    alert("銘柄と日付は必須です。");
+    return;
+  }
 
   const record = {
     symbol,
@@ -57,47 +71,56 @@ form.addEventListener("submit", async (e) => {
     form.reset();
   } catch (err) {
     console.error("保存エラー:", err);
-    alert("保存に失敗しました。ネットワークやFirestoreの設定を確認してください。");
+    alert("保存に失敗しました。Firestore の設定やネットワークを確認してください。");
   }
-});
+}
 
 // Firestore からデータを読み込んでテーブルを描画する
 async function renderTable() {
+  if (!tableBody) return;
   tableBody.innerHTML = "";
 
-  // date 昇順 or 降順は好みで：ここでは新しい日付が上に来るようにする
-  const snapshot = await db
-    .collection(COLLECTION)
-    .orderBy("date", "desc")
-    .get();
+  try {
+    const snapshot = await db
+      .collection(COLLECTION)
+      .orderBy("date", "desc") // 新しい日付が上
+      .get();
 
-  snapshot.forEach((doc) => {
-    const record = doc.data();
-    const id = doc.id; // Firestore のドキュメントID
+    snapshot.forEach((doc) => {
+      const record = doc.data();
+      const id = doc.id;
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${record.date || ""}</td>
-      <td>${record.symbol || ""}</td>
-      <td>${record.side === "buy" ? "買い" : "売り"}</td>
-      <td>${record.quantity ?? ""}</td>
-      <td>${record.price ?? ""}</td>
-      <td>${record.comment || ""}</td>
-      <td>${record.good || ""}</td>
-      <td>${record.bad || ""}</td>
-      <td><button data-id="${id}">削除</button></td>
-    `;
-
-    tableBody.appendChild(tr);
-  });
-
-  // 削除ボタンにイベント付与
-  tableBody.querySelectorAll("button[data-id]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.getAttribute("data-id");
-      await db.collection(COLLECTION).doc(id).delete();
-      await renderTable();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${record.date || ""}</td>
+        <td>${record.symbol || ""}</td>
+        <td>${record.side === "buy" ? "買い" : "売り"}</td>
+        <td>${record.quantity ?? ""}</td>
+        <td>${record.price ?? ""}</td>
+        <td>${record.comment || ""}</td>
+        <td>${record.good || ""}</td>
+        <td>${record.bad || ""}</td>
+        <td><button data-id="${id}">削除</button></td>
+      `;
+      tableBody.appendChild(tr);
     });
-  });
+
+    // 削除ボタンにイベント付与
+    tableBody.querySelectorAll("button[data-id]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        try {
+          await db.collection(COLLECTION).doc(id).delete();
+          await renderTable();
+        } catch (err) {
+          console.error("削除エラー:", err);
+          alert("削除に失敗しました。");
+        }
+      });
+    });
+  } catch (err) {
+    console.error("読み込みエラー:", err);
+    alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
+  }
 }
 
