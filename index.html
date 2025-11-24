@@ -33,6 +33,21 @@
       <label>取引日</label>
       <input type="date" id="date" required>
     </div>
+
+    <!-- 追加部分：コメント・良いところ・悪いところ -->
+    <div class="field">
+      <label>コメント</label>
+      <textarea id="comment" rows="2" placeholder="今回の取引のメモなど"></textarea>
+    </div>
+    <div class="field">
+      <label>良いところ</label>
+      <textarea id="good" rows="2" placeholder="うまくいった点・よかった点"></textarea>
+    </div>
+    <div class="field">
+      <label>悪いところ</label>
+      <textarea id="bad" rows="2" placeholder="反省点・改善したい点"></textarea>
+    </div>
+
     <button type="submit">登録</button>
   </form>
 
@@ -45,6 +60,9 @@
         <th>区分</th>
         <th>数量</th>
         <th>価格</th>
+        <th>コメント</th>
+        <th>良いところ</th>
+        <th>悪いところ</th>
         <th>削除</th>
       </tr>
     </thead>
@@ -54,3 +72,5 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+
