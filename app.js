@@ -43,11 +43,14 @@ async function onSubmit(e) {
   const quantity = Number(document.getElementById("quantity").value);
   const acquirePrice = Number(document.getElementById("acquirePrice").value);
   const date = document.getElementById("date").value;
-
+  
   const comment = document.getElementById("comment").value.trim();
   const good = document.getElementById("good").value.trim();
   const bad = document.getElementById("bad").value.trim();
 
+  const profitValue = document.getElementById("profit").value;
+  const profit = profitValue === "" ? null : Number(profitValue);
+  
   if (!symbol || !date) {
     alert("銘柄と日付は必須です。");
     return;
@@ -58,6 +61,7 @@ async function onSubmit(e) {
     side,
     quantity,
     acquirePrice,
+    profit,
     date,
     comment,
     good,
@@ -97,6 +101,7 @@ async function renderTable() {
         <td>${record.side === "buy" ? "買い" : "売り"}</td>
         <td>${record.quantity ?? ""}</td>
         <td>${record.acquirePrice ?? ""}</td>
+        <td>${record.profit ?? ""}</td>
         <td>${record.comment || ""}</td>
         <td>${record.good || ""}</td>
         <td>${record.bad || ""}</td>
@@ -123,5 +128,6 @@ async function renderTable() {
     alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
   }
 }
+
 
 
