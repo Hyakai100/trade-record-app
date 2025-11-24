@@ -41,7 +41,7 @@ async function onSubmit(e) {
   const symbol = document.getElementById("symbol").value.trim();
   const side = document.getElementById("side").value;
   const quantity = Number(document.getElementById("quantity").value);
-  const price = Number(document.getElementById("price").value);
+  const acquirePrice = Number(document.getElementById("acquirePrice").value);
   const date = document.getElementById("date").value;
 
   const comment = document.getElementById("comment").value.trim();
@@ -57,7 +57,7 @@ async function onSubmit(e) {
     symbol,
     side,
     quantity,
-    price,
+    acquirePrice,
     date,
     comment,
     good,
@@ -96,7 +96,7 @@ async function renderTable() {
         <td>${record.symbol || ""}</td>
         <td>${record.side === "buy" ? "買い" : "売り"}</td>
         <td>${record.quantity ?? ""}</td>
-        <td>${record.price ?? ""}</td>
+        <td>${record.acquirePrice ?? ""}</td>
         <td>${record.comment || ""}</td>
         <td>${record.good || ""}</td>
         <td>${record.bad || ""}</td>
@@ -123,4 +123,5 @@ async function renderTable() {
     alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
   }
 }
+
 
