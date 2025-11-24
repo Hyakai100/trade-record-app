@@ -67,7 +67,7 @@ function renderTable() {
   tableBody.innerHTML = "";
 
   records
-    .sort((a, b) => a.date.localeCompare(b.date)) // 日付順
+    .sort((a, b) => b.date.localeCompare(a.date)) // 日付順
     .forEach(record => {
       const tr = document.createElement("tr");
 
@@ -96,3 +96,4 @@ function renderTable() {
     });
   });
 }
+
