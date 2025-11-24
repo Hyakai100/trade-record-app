@@ -17,7 +17,8 @@ form.addEventListener("submit", (e) => {
   const symbol = document.getElementById("symbol").value.trim();
   const side = document.getElementById("side").value;
   const quantity = Number(document.getElementById("quantity").value);
-  const price = Number(document.getElementById("price").value);
+  const acquirePrice = Number(document.getElementById("acquirePrice").value);
+  const profit = Number(document.getElementById("profit").value);
   const date = document.getElementById("date").value;
 
   const comment = document.getElementById("comment").value.trim();
@@ -31,7 +32,8 @@ form.addEventListener("submit", (e) => {
     symbol,
     side,
     quantity,
-    price,
+    acquirePrice,
+    profit,
     date,
     comment,
     good,
@@ -67,7 +69,7 @@ function renderTable() {
   tableBody.innerHTML = "";
 
   records
-    .sort((a, b) => b.date.localeCompare(a.date)) // 日付順
+    .sort((a, b) => b.date.localeCompare(a.date)) // 新しい日付が上
     .forEach(record => {
       const tr = document.createElement("tr");
 
@@ -76,7 +78,8 @@ function renderTable() {
         <td>${record.symbol}</td>
         <td>${record.side === "buy" ? "買い" : "売り"}</td>
         <td>${record.quantity}</td>
-        <td>${record.price}</td>
+        <td>${record.acquirePrice}</td>
+        <td>${record.profit || ""}</td>
         <td>${record.comment || ""}</td>
         <td>${record.good || ""}</td>
         <td>${record.bad || ""}</td>
@@ -96,4 +99,3 @@ function renderTable() {
     });
   });
 }
-
