@@ -95,18 +95,69 @@ async function renderTable() {
       const id = doc.id;
 
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${record.date || ""}</td>
-        <td>${record.symbol || ""}</td>
-        <td>${record.side === "buy" ? "買い" : "売り"}</td>
-        <td>${record.quantity ?? ""}</td>
-        <td>${record.acquirePrice ?? ""}</td>
-        <td>${record.profit ?? ""}</td>
-        <td>${record.comment || ""}</td>
-        <td>${record.good || ""}</td>
-        <td>${record.bad || ""}</td>
-        <td><button data-id="${id}">削除</button></td>
-      `;
+
+      // 1列目：日付
+      const tdDate = document.createElement("td");
+      tdDate.textContent = record.date || "";
+      tr.appendChild(tdDate);
+
+      // 2列目：銘柄
+      const tdSymbol = document.createElement("td");
+      tdSymbol.textContent = record.symbol || "";
+      tr.appendChild(tdSymbol);
+
+      // 3列目：区分
+      const tdSide = document.createElement("td");
+      tdSide.textContent = record.side === "buy" ? "買い" : "売り";
+      tr.appendChild(tdSide);
+
+      // 4列目：数量
+      const tdQuantity = document.createElement("td");
+      tdQuantity.textContent =
+        record.quantity !== undefined && record.quantity !== null
+          ? record.quantity
+          : "";
+      tr.appendChild(tdQuantity);
+
+      // 5列目：取得価格
+      const tdAcquire = document.createElement("td");
+      tdAcquire.textContent =
+        record.acquirePrice !== undefined && record.acquirePrice !== null
+          ? record.acquirePrice
+          : "";
+      tr.appendChild(tdAcquire);
+
+      // 6列目：損益額
+      const tdProfit = document.createElement("td");
+      tdProfit.textContent =
+        record.profit !== undefined && record.profit !== null
+          ? record.profit
+          : "";
+      tr.appendChild(tdProfit);
+
+      // 7列目：コメント
+      const tdComment = document.createElement("td");
+      tdComment.textContent = record.comment || "";
+      tr.appendChild(tdComment);
+
+      // 8列目：良いところ
+      const tdGood = document.createElement("td");
+      tdGood.textContent = record.good || "";
+      tr.appendChild(tdGood);
+
+      // 9列目：悪いところ
+      const tdBad = document.createElement("td");
+      tdBad.textContent = record.bad || "";
+      tr.appendChild(tdBad);
+
+      // 10列目：削除ボタン
+      const tdDelete = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.textContent = "削除";
+      btn.setAttribute("data-id", id);
+      tdDelete.appendChild(btn);
+      tr.appendChild(tdDelete);
+
       tableBody.appendChild(tr);
     });
 
@@ -128,6 +179,8 @@ async function renderTable() {
     alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
   }
 }
+
+
 
 
 
