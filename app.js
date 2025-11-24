@@ -20,6 +20,10 @@ form.addEventListener("submit", (e) => {
   const price = Number(document.getElementById("price").value);
   const date = document.getElementById("date").value;
 
+  const comment = document.getElementById("comment").value.trim();
+  const good = document.getElementById("good").value.trim();
+  const bad = document.getElementById("bad").value.trim();
+
   if (!symbol || !date) return;
 
   const record = {
@@ -28,7 +32,10 @@ form.addEventListener("submit", (e) => {
     side,
     quantity,
     price,
-    date
+    date,
+    comment,
+    good,
+    bad
   };
 
   const records = loadRecords();
@@ -70,6 +77,9 @@ function renderTable() {
         <td>${record.side === "buy" ? "買い" : "売り"}</td>
         <td>${record.quantity}</td>
         <td>${record.price}</td>
+        <td>${record.comment || ""}</td>
+        <td>${record.good || ""}</td>
+        <td>${record.bad || ""}</td>
         <td><button data-id="${record.id}">削除</button></td>
       `;
 
