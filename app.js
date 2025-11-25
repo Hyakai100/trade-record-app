@@ -128,6 +128,7 @@ async function renderTable() {
     const snapshot = await db
       .collection(COLLECTION)
       .orderBy("date", "desc")
+      .orderBy("time", "desc")
       .get();
 
     snapshot.forEach((doc) => {
@@ -212,3 +213,4 @@ function startEdit(id, record) {
   document.getElementById("comment").value = record.comment || "";
   document.getElementById("bad").value = record.bad || "";
 }
+
