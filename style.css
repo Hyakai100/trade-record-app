@@ -50,3 +50,10 @@ th, td {
   text-align: center;
 }
 
+/* コメントと悪いところの幅を揃えて、表全体の60%を占める */
+td:nth-child(8), th:nth-child(8),   /* コメント列 */
+td:nth-child(9), th:nth-child(9) {  /* 悪いところ列 */
+  width: 30%;
+}
+
+
