@@ -45,7 +45,6 @@
       <input type="time" id="time">
     </div>
 
-    <!-- コメント欄 -->
     <div class="field">
       <label>コメント</label>
       <textarea id="comment" rows="2" placeholder="今回の取引のメモなど"></textarea>
@@ -55,9 +54,8 @@
       <textarea id="bad" rows="2" placeholder="反省点・改善したい点"></textarea>
     </div>
 
+    <!-- 編集中かどうかはJS側で管理するので hidden は不要 -->
     <button type="submit">登録</button>
-    <input type="hidden" id="editId">
-
   </form>
 
   <h2>記録一覧</h2>
@@ -73,7 +71,7 @@
         <th>損益額</th>
         <th>コメント</th>
         <th>悪いところ</th>
-        <th>削除</th>
+        <th>操作</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -86,8 +84,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
