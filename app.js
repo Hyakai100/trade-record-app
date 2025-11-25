@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const COLLECTION = "trades";
 
-// 🔑 一覧表示のカラム順（DBフィールド名）
+// 🔑 一覧表示のカラム順（DBのフィールド名）
 const FIELD_ORDER = [
   "date",
   "time",
@@ -26,13 +26,11 @@ const FIELD_ORDER = [
   "bad",
 ];
 
-// フォームやテーブルの参照用
 let form;
 let tableBody;
 let submitButton;
-let editingId = null; // 編集中ドキュメントID（nullなら新規）
+let editingId = null; // null → 新規モード / 文字列ID → 編集モード
 
-// DOM が読み込まれてから初期化
 document.addEventListener("DOMContentLoaded", () => {
   form = document.getElementById("trade-form");
   tableBody = document.querySelector("#trade-table tbody");
@@ -43,14 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 初期表示
   renderTable();
-
-  // フォーム送信イベント
   form.addEventListener("submit", onSubmit);
 });
 
-// フォーム送信時の処理（新規 or 更新）
+// フォーム送信（新規 or 更新）
 async function onSubmit(e) {
   e.preventDefault();
 
@@ -58,14 +53,11 @@ async function onSubmit(e) {
   const side = document.getElementById("side").value;
   const quantity = Number(document.getElementById("quantity").value);
   const acquirePrice = Number(document.getElementById("acquirePrice").value);
-
   const profitValue = document.getElementById("profit").value;
   const profit = profitValue === "" ? null : Number(profitValue);
-
   const date = document.getElementById("date").value;
   const timeInput = document.getElementById("time");
   const time = timeInput ? timeInput.value : "";
-
   const comment = document.getElementById("comment").value.trim();
   const bad = document.getElementById("bad").value.trim();
 
@@ -74,7 +66,6 @@ async function onSubmit(e) {
     return;
   }
 
-  // Firestoreに送るデータ
   const record = {
     symbol,
     side,
@@ -89,11 +80,11 @@ async function onSubmit(e) {
 
   try {
     if (editingId) {
-      // 更新モード
+      // 更新
       record.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
       await db.collection(COLLECTION).doc(editingId).update(record);
     } else {
-      // 新規追加モード
+      // 新規
       record.createdAt = firebase.firestore.FieldValue.serverTimestamp();
       await db.collection(COLLECTION).add(record);
     }
@@ -107,10 +98,8 @@ async function onSubmit(e) {
   }
 }
 
-// 編集状態のリセット
 function clearEditingState() {
   editingId = null;
-  document.getElementById("editId").value = "";
   submitButton.textContent = "登録";
 }
 
@@ -130,7 +119,7 @@ function getDisplayValue(field, record) {
   return String(value);
 }
 
-// Firestore からデータを読み込んでテーブルを描画する
+// Firestore からデータを読み込んでテーブルを描画
 async function renderTable() {
   if (!tableBody) return;
   tableBody.innerHTML = "";
@@ -138,7 +127,7 @@ async function renderTable() {
   try {
     const snapshot = await db
       .collection(COLLECTION)
-      .orderBy("date", "desc") // 新しい日付が上
+      .orderBy("date", "desc")
       .get();
 
     snapshot.forEach((doc) => {
@@ -147,14 +136,14 @@ async function renderTable() {
 
       const tr = document.createElement("tr");
 
-      // FIELD_ORDER の順番どおりに <td> を作る
+      // 各フィールドのセル
       FIELD_ORDER.forEach((field) => {
         const td = document.createElement("td");
         td.textContent = getDisplayValue(field, record);
         tr.appendChild(td);
       });
 
-      // 操作列（編集・削除ボタン）
+      // 操作列（編集・削除）
       const tdActions = document.createElement("td");
 
       const editBtn = document.createElement("button");
@@ -191,10 +180,9 @@ async function renderTable() {
   }
 }
 
-// 編集開始：フォームに値を反映して更新モードに
+// 編集開始：フォームに反映して「更新モード」に切り替え
 function startEdit(id, record) {
   editingId = id;
-  document.getElementById("editId").value = id;
   submitButton.textContent = "更新";
 
   document.getElementById("symbol").value = record.symbol || "";
@@ -224,9 +212,3 @@ function startEdit(id, record) {
   document.getElementById("comment").value = record.comment || "";
   document.getElementById("bad").value = record.bad || "";
 }
-
-
-
-
-
-
