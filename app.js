@@ -11,7 +11,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const COLLECTION = "trades"; // コレクション名
+const COLLECTION = "trades";
 
 // 🔑 一覧表示のカラム順（DBフィールド名）
 const FIELD_ORDER = [
@@ -23,20 +23,22 @@ const FIELD_ORDER = [
   "acquirePrice",
   "profit",
   "comment",
-  "good",
   "bad",
 ];
 
 // フォームやテーブルの参照用
 let form;
 let tableBody;
+let submitButton;
+let editingId = null; // 編集中ドキュメントID（nullなら新規）
 
 // DOM が読み込まれてから初期化
 document.addEventListener("DOMContentLoaded", () => {
   form = document.getElementById("trade-form");
   tableBody = document.querySelector("#trade-table tbody");
+  submitButton = form.querySelector('button[type="submit"]');
 
-  if (!form || !tableBody) {
+  if (!form || !tableBody || !submitButton) {
     console.error("フォームまたはテーブルが見つかりません");
     return;
   }
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", onSubmit);
 });
 
-// フォーム送信時の処理
+// フォーム送信時の処理（新規 or 更新）
 async function onSubmit(e) {
   e.preventDefault();
 
@@ -56,12 +58,15 @@ async function onSubmit(e) {
   const side = document.getElementById("side").value;
   const quantity = Number(document.getElementById("quantity").value);
   const acquirePrice = Number(document.getElementById("acquirePrice").value);
+
   const profitValue = document.getElementById("profit").value;
   const profit = profitValue === "" ? null : Number(profitValue);
+
   const date = document.getElementById("date").value;
-  const time = document.getElementById("time") ? document.getElementById("time").value : "";
+  const timeInput = document.getElementById("time");
+  const time = timeInput ? timeInput.value : "";
+
   const comment = document.getElementById("comment").value.trim();
-  const good = document.getElementById("good").value.trim();
   const bad = document.getElementById("bad").value.trim();
 
   if (!symbol || !date) {
@@ -69,6 +74,7 @@ async function onSubmit(e) {
     return;
   }
 
+  // Firestoreに送るデータ
   const record = {
     symbol,
     side,
@@ -78,19 +84,34 @@ async function onSubmit(e) {
     date,
     time,
     comment,
-    good,
     bad,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   };
 
   try {
-    await db.collection(COLLECTION).add(record);
+    if (editingId) {
+      // 更新モード
+      record.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection(COLLECTION).doc(editingId).update(record);
+    } else {
+      // 新規追加モード
+      record.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection(COLLECTION).add(record);
+    }
+
     await renderTable();
     form.reset();
+    clearEditingState();
   } catch (err) {
     console.error("保存エラー:", err);
     alert("保存に失敗しました。Firestore の設定やネットワークを確認してください。");
   }
+}
+
+// 編集状態のリセット
+function clearEditingState() {
+  editingId = null;
+  document.getElementById("editId").value = "";
+  submitButton.textContent = "登録";
 }
 
 // 表示用の値をフィールドごとに決める
@@ -133,29 +154,36 @@ async function renderTable() {
         tr.appendChild(td);
       });
 
-      // 最後の列：削除ボタン
-      const tdDelete = document.createElement("td");
-      const btn = document.createElement("button");
-      btn.textContent = "削除";
-      btn.setAttribute("data-id", id);
-      tdDelete.appendChild(btn);
-      tr.appendChild(tdDelete);
+      // 操作列（編集・削除ボタン）
+      const tdActions = document.createElement("td");
 
-      tableBody.appendChild(tr);
-    });
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "編集";
+      editBtn.addEventListener("click", () => startEdit(id, record));
 
-    // 削除ボタンにイベント付与
-    tableBody.querySelectorAll("button[data-id]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const id = btn.getAttribute("data-id");
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "削除";
+      deleteBtn.style.marginLeft = "4px";
+      deleteBtn.addEventListener("click", async () => {
+        if (!confirm("本当に削除しますか？")) return;
         try {
           await db.collection(COLLECTION).doc(id).delete();
           await renderTable();
+          if (editingId === id) {
+            clearEditingState();
+            form.reset();
+          }
         } catch (err) {
           console.error("削除エラー:", err);
           alert("削除に失敗しました。");
         }
       });
+
+      tdActions.appendChild(editBtn);
+      tdActions.appendChild(deleteBtn);
+      tr.appendChild(tdActions);
+
+      tableBody.appendChild(tr);
     });
   } catch (err) {
     console.error("読み込みエラー:", err);
@@ -163,6 +191,39 @@ async function renderTable() {
   }
 }
 
+// 編集開始：フォームに値を反映して更新モードに
+function startEdit(id, record) {
+  editingId = id;
+  document.getElementById("editId").value = id;
+  submitButton.textContent = "更新";
+
+  document.getElementById("symbol").value = record.symbol || "";
+  document.getElementById("side").value = record.side || "buy";
+  document.getElementById("quantity").value =
+    record.quantity !== undefined && record.quantity !== null
+      ? record.quantity
+      : "";
+
+  document.getElementById("acquirePrice").value =
+    record.acquirePrice !== undefined && record.acquirePrice !== null
+      ? record.acquirePrice
+      : "";
+
+  document.getElementById("profit").value =
+    record.profit !== undefined && record.profit !== null
+      ? record.profit
+      : "";
+
+  document.getElementById("date").value = record.date || "";
+
+  const timeInput = document.getElementById("time");
+  if (timeInput) {
+    timeInput.value = record.time || "";
+  }
+
+  document.getElementById("comment").value = record.comment || "";
+  document.getElementById("bad").value = record.bad || "";
+}
 
 
 
