@@ -63,6 +63,7 @@ async function onSubmit(e) {
     acquirePrice,
     profit,
     date,
+    time,
     comment,
     good,
     bad,
@@ -101,17 +102,22 @@ async function renderTable() {
       tdDate.textContent = record.date || "";
       tr.appendChild(tdDate);
 
-      // 2列目：銘柄
+      // 2列目：時間（★追加）
+      const tdTime = document.createElement("td");
+      tdTime.textContent = record.time || "";
+      tr.appendChild(tdTime);
+
+      // 3列目：銘柄
       const tdSymbol = document.createElement("td");
       tdSymbol.textContent = record.symbol || "";
       tr.appendChild(tdSymbol);
 
-      // 3列目：区分
+      // 4列目：区分
       const tdSide = document.createElement("td");
       tdSide.textContent = record.side === "buy" ? "買い" : "売り";
       tr.appendChild(tdSide);
 
-      // 4列目：数量
+      // 5列目：数量
       const tdQuantity = document.createElement("td");
       tdQuantity.textContent =
         record.quantity !== undefined && record.quantity !== null
@@ -119,7 +125,7 @@ async function renderTable() {
           : "";
       tr.appendChild(tdQuantity);
 
-      // 5列目：取得価格
+      // 6列目：取得価格
       const tdAcquire = document.createElement("td");
       tdAcquire.textContent =
         record.acquirePrice !== undefined && record.acquirePrice !== null
@@ -127,7 +133,7 @@ async function renderTable() {
           : "";
       tr.appendChild(tdAcquire);
 
-      // 6列目：損益額
+      // 7列目：損益額
       const tdProfit = document.createElement("td");
       tdProfit.textContent =
         record.profit !== undefined && record.profit !== null
@@ -135,22 +141,22 @@ async function renderTable() {
           : "";
       tr.appendChild(tdProfit);
 
-      // 7列目：コメント
+      // 8列目：コメント
       const tdComment = document.createElement("td");
       tdComment.textContent = record.comment || "";
       tr.appendChild(tdComment);
 
-      // 8列目：良いところ
+      // 9列目：良いところ
       const tdGood = document.createElement("td");
       tdGood.textContent = record.good || "";
       tr.appendChild(tdGood);
 
-      // 9列目：悪いところ
+      // 10列目：悪いところ
       const tdBad = document.createElement("td");
       tdBad.textContent = record.bad || "";
       tr.appendChild(tdBad);
 
-      // 10列目：削除ボタン
+      // 11列目：削除ボタン
       const tdDelete = document.createElement("td");
       const btn = document.createElement("button");
       btn.textContent = "削除";
@@ -179,6 +185,7 @@ async function renderTable() {
     alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
   }
 }
+
 
 
 
