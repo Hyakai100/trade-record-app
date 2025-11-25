@@ -6,14 +6,28 @@ const firebaseConfig = {
   storageBucket: "trade-record-app.firebasestorage.app",
   messagingSenderId: "407358487748",
   appId: "1:407358487748:web:aa9c1d5860a6c118149d91",
-  measurementId: "G-CFBMQHRLSS"
+  measurementId: "G-CFBMQHRLSS",
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const COLLECTION = "trades"; // コレクション名
 
-// フォームやテーブルの参照用（あとで代入する）
+// 🔑 一覧表示のカラム順（DBフィールド名）
+const FIELD_ORDER = [
+  "date",
+  "time",
+  "symbol",
+  "side",
+  "quantity",
+  "acquirePrice",
+  "profit",
+  "comment",
+  "good",
+  "bad",
+];
+
+// フォームやテーブルの参照用
 let form;
 let tableBody;
 
@@ -42,15 +56,14 @@ async function onSubmit(e) {
   const side = document.getElementById("side").value;
   const quantity = Number(document.getElementById("quantity").value);
   const acquirePrice = Number(document.getElementById("acquirePrice").value);
+  const profitValue = document.getElementById("profit").value;
+  const profit = profitValue === "" ? null : Number(profitValue);
   const date = document.getElementById("date").value;
-  
+  const time = document.getElementById("time") ? document.getElementById("time").value : "";
   const comment = document.getElementById("comment").value.trim();
   const good = document.getElementById("good").value.trim();
   const bad = document.getElementById("bad").value.trim();
 
-  const profitValue = document.getElementById("profit").value;
-  const profit = profitValue === "" ? null : Number(profitValue);
-  
   if (!symbol || !date) {
     alert("銘柄と日付は必須です。");
     return;
@@ -80,6 +93,22 @@ async function onSubmit(e) {
   }
 }
 
+// 表示用の値をフィールドごとに決める
+function getDisplayValue(field, record) {
+  if (field === "side") {
+    if (record.side === "buy") return "買い";
+    if (record.side === "sell") return "売り";
+    return "";
+  }
+
+  const value = record[field];
+
+  // null / undefined は空白表示
+  if (value === null || value === undefined) return "";
+
+  return String(value);
+}
+
 // Firestore からデータを読み込んでテーブルを描画する
 async function renderTable() {
   if (!tableBody) return;
@@ -97,66 +126,14 @@ async function renderTable() {
 
       const tr = document.createElement("tr");
 
-      // 1列目：日付
-      const tdDate = document.createElement("td");
-      tdDate.textContent = record.date || "";
-      tr.appendChild(tdDate);
+      // FIELD_ORDER の順番どおりに <td> を作る
+      FIELD_ORDER.forEach((field) => {
+        const td = document.createElement("td");
+        td.textContent = getDisplayValue(field, record);
+        tr.appendChild(td);
+      });
 
-      // 2列目：時間（★追加）
-      const tdTime = document.createElement("td");
-      tdTime.textContent = record.time || "";
-      tr.appendChild(tdTime);
-
-      // 3列目：銘柄
-      const tdSymbol = document.createElement("td");
-      tdSymbol.textContent = record.symbol || "";
-      tr.appendChild(tdSymbol);
-
-      // 4列目：区分
-      const tdSide = document.createElement("td");
-      tdSide.textContent = record.side === "buy" ? "買い" : "売り";
-      tr.appendChild(tdSide);
-
-      // 5列目：数量
-      const tdQuantity = document.createElement("td");
-      tdQuantity.textContent =
-        record.quantity !== undefined && record.quantity !== null
-          ? record.quantity
-          : "";
-      tr.appendChild(tdQuantity);
-
-      // 6列目：取得価格
-      const tdAcquire = document.createElement("td");
-      tdAcquire.textContent =
-        record.acquirePrice !== undefined && record.acquirePrice !== null
-          ? record.acquirePrice
-          : "";
-      tr.appendChild(tdAcquire);
-
-      // 7列目：損益額
-      const tdProfit = document.createElement("td");
-      tdProfit.textContent =
-        record.profit !== undefined && record.profit !== null
-          ? record.profit
-          : "";
-      tr.appendChild(tdProfit);
-
-      // 8列目：コメント
-      const tdComment = document.createElement("td");
-      tdComment.textContent = record.comment || "";
-      tr.appendChild(tdComment);
-
-      // 9列目：良いところ
-      const tdGood = document.createElement("td");
-      tdGood.textContent = record.good || "";
-      tr.appendChild(tdGood);
-
-      // 10列目：悪いところ
-      const tdBad = document.createElement("td");
-      tdBad.textContent = record.bad || "";
-      tr.appendChild(tdBad);
-
-      // 11列目：削除ボタン
+      // 最後の列：削除ボタン
       const tdDelete = document.createElement("td");
       const btn = document.createElement("button");
       btn.textContent = "削除";
@@ -185,6 +162,7 @@ async function renderTable() {
     alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
   }
 }
+
 
 
 
