@@ -13,35 +13,20 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const COLLECTION = "trades";
 
-// 🔑 一覧表示のカラム順（DBのフィールド名）
-const FIELD_ORDER = [
-  "date",
-  "time",
-  "symbol",
-  "side",
-  "quantity",
-  "acquirePrice",
-  "profit",
-  "comment",
-  "bad",
-];
-
 let form;
-let tableBody;
 let submitButton;
 let editingId = null; // null → 新規モード / 文字列ID → 編集モード
 
 document.addEventListener("DOMContentLoaded", () => {
   form = document.getElementById("trade-form");
-  tableBody = document.querySelector("#trade-table tbody");
-  submitButton = form.querySelector('button[type="submit"]');
+  submitButton = form?.querySelector('button[type="submit"]');
 
-  if (!form || !tableBody || !submitButton) {
-    console.error("フォームまたはテーブルが見つかりません");
+  if (!form || !submitButton) {
+    console.error("フォームまたはボタンが見つかりません");
     return;
   }
 
-  renderTable();
+  renderCards();                 // ← 最初の一覧表示
   form.addEventListener("submit", onSubmit);
 });
 
@@ -89,7 +74,7 @@ async function onSubmit(e) {
       await db.collection(COLLECTION).add(record);
     }
 
-    await renderTable();
+    await renderCards();   // ← ここも renderCards に統一
     form.reset();
     clearEditingState();
   } catch (err) {
@@ -103,25 +88,11 @@ function clearEditingState() {
   submitButton.textContent = "登録";
 }
 
-// 表示用の値をフィールドごとに決める
-function getDisplayValue(field, record) {
-  if (field === "side") {
-    if (record.side === "buy") return "買い";
-    if (record.side === "sell") return "売り";
-    return "";
-  }
-
-  const value = record[field];
-
-  // null / undefined は空白表示
-  if (value === null || value === undefined) return "";
-
-  return String(value);
-}
-
-// Firestore からデータを読み込んでテーブルを描画
+// Firestore からデータを読み込んでカードを描画
 async function renderCards() {
   const list = document.getElementById("record-list");
+  if (!list) return;
+
   list.innerHTML = "";
 
   const snapshot = await db
@@ -164,16 +135,16 @@ async function renderCards() {
   });
 
   // 編集ボタン
-  document.querySelectorAll(".edit-btn").forEach(btn => {
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
-      const docData = snapshot.docs.find(d => d.id === id).data();
-      startEdit(id, docData);
+      const docData = snapshot.docs.find((d) => d.id === id)?.data();
+      if (docData) startEdit(id, docData);
     });
   });
 
   // 削除ボタン
-  document.querySelectorAll(".delete-btn").forEach(btn => {
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
       if (!confirm("削除しますか？")) return;
@@ -190,6 +161,7 @@ function startEdit(id, record) {
 
   document.getElementById("symbol").value = record.symbol || "";
   document.getElementById("side").value = record.side || "buy";
+
   document.getElementById("quantity").value =
     record.quantity !== undefined && record.quantity !== null
       ? record.quantity
@@ -215,4 +187,6 @@ function startEdit(id, record) {
   document.getElementById("comment").value = record.comment || "";
   document.getElementById("bad").value = record.bad || "";
 }
+
+
 
