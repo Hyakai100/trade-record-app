@@ -45,118 +45,70 @@ button {
 /* =========================
    記録一覧テーブル（共通）
 ========================= */
-
-/* テーブルを横スクロール可能にするラッパー（スマホ向け） */
-.table-container {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-/* ラッパーを作らない場合は、table 自体をスクロールさせる */
-.table-container table,
-table {
-  width: 100%;
-  border-collapse: collapse;
+/* ==== カード1件 ==== */
+.record-card {
   background: #fff;
-  table-layout: fixed;       /* 列幅の割合指定を効かせる */
-  min-width: 720px;         /* スマホでも詰まりすぎないように最低幅 */
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  font-size: 13px;
 }
 
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 4px 4px;
-  font-size: 10px;          /* スマホでも読めるサイズ */
-  text-align: center;
-  word-break: break-all;
-}
-
-/* 行ごとにうっすら色を変えて見やすく */
-tbody tr:nth-child(odd) {
-  background-color: #fafafa;
-}
-
-/* =========================
-   列ごとのスタイル
-========================= */
-
-/* コメント & 悪いところ → 2つで 60%、テキストは左寄せ */
-th:nth-child(8),
-td:nth-child(8) {           /* コメント */
-  width: 30%;
-  text-align: left;
-}
-
-th:nth-child(9),
-td:nth-child(9) {           /* 悪いところ */
-  width: 30%;
-  text-align: left;
-}
-
-/* 操作列：全体の約10%を使うイメージ（他列は残りを自動で分配） */
-th:nth-child(10),
-td:nth-child(10) {
-  width: 10%;
-}
-
-/* 他の列は「小さめ」扱い（必要なら微調整用） */
-th:nth-child(1), td:nth-child(1) {  /* 日付 */
-  /* 幅指定なし → 自動で残りを分配 */
-}
-th:nth-child(2), td:nth-child(2) {  /* 時間 */ }
-th:nth-child(3), td:nth-child(3) {  /* 銘柄 */ }
-th:nth-child(4), td:nth-child(4) {  /* 区分  */ }
-th:nth-child(5), td:nth-child(5) {  /* 数量  */ }
-th:nth-child(6), td:nth-child(6) {  /* 取得価格 */ }
-th:nth-child(7), td:nth-child(7) {  /* 損益額 */ }
-
-/* =========================
-   操作列（編集・削除ボタン）
-========================= */
-
-/* 縦長（狭い）画面では 10% を確保しつつ、ボタンを縦並びに */
-#trade-table th:last-child,
-#trade-table td:last-child {
-  min-width: 40px;          /* 小さすぎて潰れないように最低幅だけ確保 */
-}
-
-#trade-table td:last-child {
+/* 1行目：基本情報を横並び */
+.record-top {
   display: flex;
-  flex-direction: column;   /* 編集 / 削除 を縦並びに */
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* 2行目：コメント＋悪いところ＋ボタン */
+.record-bottom {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 2px;
-  padding: 2px;
-  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-/* 記録一覧内のボタンをコンパクトに */
-#trade-table td:last-child button {
-  width: 100%;
-  padding: 2px 0;
-  margin-top: 0;
-  font-size: 9px;
-  line-height: 1.2;
-  border-radius: 3px;
-  white-space: nowrap;
+.record-text {
+  flex: 1;
+  font-size: 12px;
 }
 
-/* =========================
-   横長画面（PC / タブレット横向き）
-========================= */
+/* コメントと悪いところを「 / 」でつなぐ */
+.record-text span.label {
+  font-weight: bold;
+}
 
-@media (min-width: 600px) {
-  /* 文字を少し大きくして、読みやすく */
-  th,
-  td {
+.record-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.record-actions button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ---- スマホ（横幅が狭い） ---- */
+@media (max-width: 480px) {
+  .record-card {
     font-size: 12px;
-    padding: 6px 6px;
   }
-
-  /* 操作列は 60px 固定でバランスを整える */
-  #trade-table th:last-child,
-  #trade-table td:last-child {
-    width: 60px;
+  .record-top {
+    gap: 6px;
+  }
+  .record-text {
+    width: 100%;
+  }
+  .record-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 
