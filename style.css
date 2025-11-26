@@ -103,12 +103,13 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 
 /* ボタンを小型化 */
 #trade-table button {
-  padding: 1px 4px;
+  padding: 2px 6px;
   font-size: 10px;
   line-height: 1.2;
   border-radius: 4px;
-  height: 12px;     /* 高さを固定して完全に揃える */
+  height: 22px;     /* 高さを固定して完全に揃える */
 }
+
 
 
 
