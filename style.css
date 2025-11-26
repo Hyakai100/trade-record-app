@@ -50,7 +50,7 @@ th,
 td {
   border: 1px solid #ddd;
   padding: 3px;
-  font-size: 9px;      /* スマホで読みやすい基準サイズ */
+  font-size: 6px;      /* スマホで読みやすい基準サイズ */
   text-align: center;
   word-break: break-all;
 }
@@ -139,3 +139,4 @@ th:nth-child(10), td:nth-child(10) {
     padding: 4px;
   }
 }
+
