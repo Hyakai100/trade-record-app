@@ -93,4 +93,12 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
   width: 10%;
 }
 
+/* 記録一覧テーブル内のボタン（編集・削除） */
+#trade-table button {
+  padding: 2px 6px;    /* ボタンの中の余白を減らす */
+  font-size: 10px;     /* 文字サイズを小さく */
+  line-height: 1.2;
+  border-radius: 4px;
+}
+
 
