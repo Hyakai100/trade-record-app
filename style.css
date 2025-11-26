@@ -41,6 +41,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
+  table-layout: fixed;      /* ★ 幅を割合でガッチリ決める */
 }
 
 th, td {
@@ -48,12 +49,41 @@ th, td {
   padding: 6px;
   font-size: 12px;
   text-align: center;
+  word-break: break-all;    /* ★ 狭い画面でもはみ出さないように */
 }
 
-/* コメントと悪いところの幅を揃えて、表全体の60%を占める */
-td:nth-child(8), th:nth-child(8),   /* コメント列 */
-td:nth-child(9), th:nth-child(9) {  /* 悪いところ列 */
+/* 列ごとの幅を割合で指定（合計 ≒ 100%） */
+th:nth-child(1), td:nth-child(1) {  /* 日付 */
+  width: 8%;
+}
+th:nth-child(2), td:nth-child(2) {  /* 時間 */
+  width: 8%;
+}
+th:nth-child(3), td:nth-child(3) {  /* 銘柄 */
+  width: 10%;
+}
+th:nth-child(4), td:nth-child(4) {  /* 区分 */
+  width: 6%;
+}
+th:nth-child(5), td:nth-child(5) {  /* 数量 */
+  width: 8%;
+}
+th:nth-child(6), td:nth-child(6) {  /* 取得価格 */
+  width: 10%;
+}
+th:nth-child(7), td:nth-child(7) {  /* 損益額 */
+  width: 10%;
+}
+
+/* コメントと悪いところの幅を揃えて、2つで60%くらいにする */
+th:nth-child(8), td:nth-child(8) {  /* コメント */
+  width: 30%;
+}
+th:nth-child(9), td:nth-child(9) {  /* 悪いところ */
   width: 30%;
 }
 
-
+/* 操作ボタン列 */
+th:nth-child(10), td:nth-child(10) { /* 操作 */
+  width: 10%;
+}
