@@ -94,37 +94,34 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 }
 
 
-/* ---------------------------------------
-   操作列（編集・削除）を小型化する
-----------------------------------------*/
-
-/* 操作列：最小幅で十分収まるサイズ（スマホ優先） */
+/* 操作列の幅（ボタン2つが縦に入る最小サイズ） */
 #trade-table th:last-child,
 #trade-table td:last-child {
-  width: 60px;           /* ← さらに小さくした最小幅 */
+  width: 60px;
 }
 
-/* 操作列の中身（ボタン）を縦並び・中央揃え */
+/* 操作列のセル内レイアウト：ボタンを縦並び＋中央揃え */
 #trade-table td:last-child {
   display: flex;
-  flex-direction: column;   /* ← 縦並びに変更！ */
+  flex-direction: column;   /* ← 縦並びにするポイント */
   justify-content: center;
   align-items: center;
-  gap: 2px;                 /* ボタン同士の縦の余白 */
+  gap: 2px;                 /* ボタン同士の縦の間隔 */
   padding: 2px;
   box-sizing: border-box;
 }
 
-/* ボタン小型化（縦並びでも崩れないサイズ） */
-#trade-table button {
-  padding: 1px 3px;
+/* 記録一覧テーブル内のボタン（編集・削除）だけに適用 */
+#trade-table td:last-child button {
+  width: 100%;              /* セルの中で横位置をそろえる */
+  margin-top: 0;            /* 共通の margin-top:8px を打ち消す */
+  padding: 1px 0;
   font-size: 8px;
-  line-height: 1.0;
+  line-height: 1.1;
   border-radius: 3px;
   white-space: nowrap;
-  width: 100%;              /* ← ボタン幅を揃える（横位置がビシッと揃う） */
-  text-align: center;
 }
+
 
 
 /* ---------------------------------------
@@ -142,5 +139,6 @@ th, td {
     font-size: 12px;       /* ← 横長画面では見やすく */
   }
 }
+
 
 
