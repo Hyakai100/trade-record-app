@@ -127,8 +127,8 @@ async function renderTable() {
   try {
     const snapshot = await db
       .collection(COLLECTION)
-      .orderBy("date", "desc")
-      .orderBy("time", "desc")
+      .orderBy("date", "desc")  // 新しい日付
+      .orderBy("time", "desc")  // 同じ日付なら新しい時間
       .get();
 
     snapshot.forEach((doc) => {
@@ -213,4 +213,3 @@ function startEdit(id, record) {
   document.getElementById("comment").value = record.comment || "";
   document.getElementById("bad").value = record.bad || "";
 }
-
