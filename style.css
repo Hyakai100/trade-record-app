@@ -1,3 +1,7 @@
+/* =========================
+   全体レイアウト
+========================= */
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
@@ -7,6 +11,7 @@ body {
 
 h1, h2 {
   text-align: center;
+  margin: 16px 0;
 }
 
 form {
@@ -37,72 +42,84 @@ button {
   margin-top: 8px;
 }
 
-/* ===== 記録一覧テーブルの基本 ===== */
+/* =========================
+   記録一覧テーブル（共通）
+========================= */
 
+/* テーブルを横スクロール可能にするラッパー（スマホ向け） */
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ラッパーを作らない場合は、table 自体をスクロールさせる */
+.table-container table,
 table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  table-layout: fixed;
+  table-layout: fixed;       /* 列幅の割合指定を効かせる */
+  min-width: 720px;         /* スマホでも詰まりすぎないように最低幅 */
 }
 
 th,
 td {
   border: 1px solid #ddd;
-  padding: 3px;
-  font-size: 6px;      /* スマホで読みやすい基準サイズ */
+  padding: 4px 4px;
+  font-size: 10px;          /* スマホでも読めるサイズ */
   text-align: center;
   word-break: break-all;
 }
 
-/* 列ごとの幅（合計 ≒ 100%） */
+/* 行ごとにうっすら色を変えて見やすく */
+tbody tr:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+/* =========================
+   列ごとのスタイル
+========================= */
+
+/* コメント & 悪いところ → 2つで 60%、テキストは左寄せ */
+th:nth-child(8),
+td:nth-child(8) {           /* コメント */
+  width: 30%;
+  text-align: left;
+}
+
+th:nth-child(9),
+td:nth-child(9) {           /* 悪いところ */
+  width: 30%;
+  text-align: left;
+}
+
+/* 操作列：全体の約10%を使うイメージ（他列は残りを自動で分配） */
+th:nth-child(10),
+td:nth-child(10) {
+  width: 10%;
+}
+
+/* 他の列は「小さめ」扱い（必要なら微調整用） */
 th:nth-child(1), td:nth-child(1) {  /* 日付 */
-  width: 8%;
+  /* 幅指定なし → 自動で残りを分配 */
 }
-th:nth-child(2), td:nth-child(2) {  /* 時間 */
-  width: 8%;
-}
-th:nth-child(3), td:nth-child(3) {  /* 銘柄 */
-  width: 10%;
-}
-th:nth-child(4), td:nth-child(4) {  /* 区分 */
-  width: 6%;
-}
-th:nth-child(5), td:nth-child(5) {  /* 数量 */
-  width: 8%;
-}
-th:nth-child(6), td:nth-child(6) {  /* 取得価格 */
-  width: 10%;
-}
-th:nth-child(7), td:nth-child(7) {  /* 損益額 */
-  width: 10%;
-}
+th:nth-child(2), td:nth-child(2) {  /* 時間 */ }
+th:nth-child(3), td:nth-child(3) {  /* 銘柄 */ }
+th:nth-child(4), td:nth-child(4) {  /* 区分  */ }
+th:nth-child(5), td:nth-child(5) {  /* 数量  */ }
+th:nth-child(6), td:nth-child(6) {  /* 取得価格 */ }
+th:nth-child(7), td:nth-child(7) {  /* 損益額 */ }
 
-/* コメントと悪いところ：2列で60% ＋ 左寄せで読みやすく */
-th:nth-child(8), td:nth-child(8) {  /* コメント */
-  width: 30%;
-  text-align: left;
-}
-th:nth-child(9), td:nth-child(9) {  /* 悪いところ */
-  width: 30%;
-  text-align: left;
-}
+/* =========================
+   操作列（編集・削除ボタン）
+========================= */
 
-/* 操作列（基本は全体の10%） */
-th:nth-child(10), td:nth-child(10) {
-  width: 10%;
-}
-
-/* ===== 操作列（編集・削除） ===== */
-
-/* 縦長（狭い）画面では 10% を確保 */
+/* 縦長（狭い）画面では 10% を確保しつつ、ボタンを縦並びに */
 #trade-table th:last-child,
 #trade-table td:last-child {
-  width: 10%;
-  min-width: 40px;
+  min-width: 40px;          /* 小さすぎて潰れないように最低幅だけ確保 */
 }
 
-/* 操作列のボタン縦並び */
 #trade-table td:last-child {
   display: flex;
   flex-direction: column;   /* 編集 / 削除 を縦並びに */
@@ -113,30 +130,33 @@ th:nth-child(10), td:nth-child(10) {
   box-sizing: border-box;
 }
 
-/* 操作列内の小型ボタン */
+/* 記録一覧内のボタンをコンパクトに */
 #trade-table td:last-child button {
   width: 100%;
-  padding: 1px 0;
-  margin-top: 0;            /* フォーム共通の margin-top を打ち消す */
-  font-size: 8px;
-  line-height: 1.1;
+  padding: 2px 0;
+  margin-top: 0;
+  font-size: 9px;
+  line-height: 1.2;
   border-radius: 3px;
   white-space: nowrap;
 }
 
-/* ===== 横長画面（PC / タブレット横）向けの調整 ===== */
-@media (min-width: 600px) {
-  /* 操作列は60px固定にしてバランスよく */
-  #trade-table th:last-child,
-  #trade-table td:last-child {
-    width: 60px;
-  }
+/* =========================
+   横長画面（PC / タブレット横向き）
+========================= */
 
-  /* 文字サイズを少し大きくして見やすく */
+@media (min-width: 600px) {
+  /* 文字を少し大きくして、読みやすく */
   th,
   td {
     font-size: 12px;
-    padding: 4px;
+    padding: 6px 6px;
+  }
+
+  /* 操作列は 60px 固定でバランスを整える */
+  #trade-table th:last-child,
+  #trade-table td:last-child {
+    width: 60px;
   }
 }
 
