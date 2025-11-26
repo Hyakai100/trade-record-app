@@ -87,3 +87,9 @@ th:nth-child(9), td:nth-child(9) {  /* 悪いところ */
 th:nth-child(10), td:nth-child(10) { /* 操作 */
   width: 10%;
 }
+
+/* 操作ボタン列 */
+th:nth-child(10), td:nth-child(10) { /* 操作 */
+  width: 10%;
+}
+
