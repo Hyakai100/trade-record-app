@@ -120,65 +120,67 @@ function getDisplayValue(field, record) {
 }
 
 // Firestore からデータを読み込んでテーブルを描画
-async function renderTable() {
-  if (!tableBody) return;
-  tableBody.innerHTML = "";
+async function renderCards() {
+  const list = document.getElementById("record-list");
+  list.innerHTML = "";
 
-  try {
-    const snapshot = await db
-      .collection(COLLECTION)
-      .orderBy("date", "desc")  // 新しい日付
-      .orderBy("time", "desc")  // 同じ日付なら新しい時間
-      .get();
+  const snapshot = await db
+    .collection(COLLECTION)
+    .orderBy("date", "desc")
+    .orderBy("time", "desc")
+    .get();
 
-    snapshot.forEach((doc) => {
-      const record = doc.data();
-      const id = doc.id;
+  snapshot.forEach((doc) => {
+    const r = doc.data();
+    const id = doc.id;
 
-      const tr = document.createElement("tr");
+    const card = document.createElement("div");
+    card.className = "record-card";
 
-      // 各フィールドのセル
-      FIELD_ORDER.forEach((field) => {
-        const td = document.createElement("td");
-        td.textContent = getDisplayValue(field, record);
-        tr.appendChild(td);
-      });
+    card.innerHTML = `
+      <div class="record-top">
+        <div>${r.date ?? ""}</div>
+        <div>${r.time ?? ""}</div>
+        <div>${r.symbol ?? ""}</div>
+        <div>${r.side === "buy" ? "買い" : "売り"}</div>
+        <div>数量 ${r.quantity ?? ""}</div>
+        <div>${r.acquirePrice ?? ""}</div>
+        <div>${r.profit ?? ""}</div>
+      </div>
 
-      // 操作列（編集・削除）
-      const tdActions = document.createElement("td");
+      <div class="record-bottom">
+        <div class="record-text">
+          ${r.comment || ""} / ${r.bad || ""}
+        </div>
 
-      const editBtn = document.createElement("button");
-      editBtn.textContent = "編集";
-      editBtn.addEventListener("click", () => startEdit(id, record));
+        <div class="record-actions">
+          <button class="edit-btn" data-id="${id}">編集</button>
+          <button class="delete-btn" data-id="${id}">削除</button>
+        </div>
+      </div>
+    `;
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "削除";
-      deleteBtn.style.marginLeft = "4px";
-      deleteBtn.addEventListener("click", async () => {
-        if (!confirm("本当に削除しますか？")) return;
-        try {
-          await db.collection(COLLECTION).doc(id).delete();
-          await renderTable();
-          if (editingId === id) {
-            clearEditingState();
-            form.reset();
-          }
-        } catch (err) {
-          console.error("削除エラー:", err);
-          alert("削除に失敗しました。");
-        }
-      });
+    list.appendChild(card);
+  });
 
-      tdActions.appendChild(editBtn);
-      tdActions.appendChild(deleteBtn);
-      tr.appendChild(tdActions);
-
-      tableBody.appendChild(tr);
+  // 編集ボタン
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      const docData = snapshot.docs.find(d => d.id === id).data();
+      startEdit(id, docData);
     });
-  } catch (err) {
-    console.error("読み込みエラー:", err);
-    alert("データの読み込みに失敗しました。Firestore の設定を確認してください。");
-  }
+  });
+
+  // 削除ボタン
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      if (!confirm("削除しますか？")) return;
+      await db.collection(COLLECTION).doc(id).delete();
+      renderCards();
+    });
+  });
 }
 
 // 編集開始：フォームに反映して「更新モード」に切り替え
@@ -213,3 +215,4 @@ function startEdit(id, record) {
   document.getElementById("comment").value = record.comment || "";
   document.getElementById("bad").value = record.bad || "";
 }
+
