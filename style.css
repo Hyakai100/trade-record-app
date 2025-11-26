@@ -37,22 +37,25 @@ button {
   margin-top: 8px;
 }
 
+/* ===== 記録一覧テーブルの基本 ===== */
+
 table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  table-layout: fixed;      /* ★ 幅を割合でガッチリ決める */
+  table-layout: fixed;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
-  padding: 2px;
-  font-size: 6px;
+  padding: 3px;
+  font-size: 9px;      /* スマホで読みやすい基準サイズ */
   text-align: center;
-  word-break: break-all;    /* ★ 狭い画面でもはみ出さないように */
+  word-break: break-all;
 }
 
-/* 列ごとの幅を割合で指定（合計 ≒ 100%） */
+/* 列ごとの幅（合計 ≒ 100%） */
 th:nth-child(1), td:nth-child(1) {  /* 日付 */
   width: 8%;
 }
@@ -75,30 +78,34 @@ th:nth-child(7), td:nth-child(7) {  /* 損益額 */
   width: 10%;
 }
 
-/* コメントと悪いところの幅を揃えて、2つで60%くらいにする */
+/* コメントと悪いところ：2列で60% ＋ 左寄せで読みやすく */
 th:nth-child(8), td:nth-child(8) {  /* コメント */
   width: 30%;
+  text-align: left;
 }
 th:nth-child(9), td:nth-child(9) {  /* 悪いところ */
   width: 30%;
+  text-align: left;
 }
 
-/* 操作ボタン列 */
-th:nth-child(10), td:nth-child(10) { /* 操作 */
+/* 操作列（基本は全体の10%） */
+th:nth-child(10), td:nth-child(10) {
   width: 10%;
 }
+
+/* ===== 操作列（編集・削除） ===== */
 
 /* 縦長（狭い）画面では 10% を確保 */
 #trade-table th:last-child,
 #trade-table td:last-child {
   width: 10%;
-  min-width: 40px;      /* 極端に縮まないよう保険として */
+  min-width: 40px;
 }
 
 /* 操作列のボタン縦並び */
 #trade-table td:last-child {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;   /* 編集 / 削除 を縦並びに */
   justify-content: center;
   align-items: center;
   gap: 2px;
@@ -110,32 +117,25 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 #trade-table td:last-child button {
   width: 100%;
   padding: 1px 0;
-  margin-top: 0;
+  margin-top: 0;            /* フォーム共通の margin-top を打ち消す */
   font-size: 8px;
   line-height: 1.1;
   border-radius: 3px;
   white-space: nowrap;
 }
 
-/* 横長画面（600px以上）では60px固定に戻す */
+/* ===== 横長画面（PC / タブレット横）向けの調整 ===== */
 @media (min-width: 600px) {
+  /* 操作列は60px固定にしてバランスよく */
   #trade-table th:last-child,
   #trade-table td:last-child {
     width: 60px;
   }
+
+  /* 文字サイズを少し大きくして見やすく */
+  th,
+  td {
+    font-size: 12px;
+    padding: 4px;
+  }
 }
-
-/* ---------------------------------------
-   記録一覧の文字サイズ（横長画面で 12px）
-----------------------------------------*/
-
-/* 基本サイズ（スマホなど縦長画面） */
-th, td {
-  font-size: 6px;         /* ← スマホ用の小さい文字 */
-}
-
-
-
-
-
-
