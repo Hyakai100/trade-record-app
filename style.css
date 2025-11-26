@@ -97,7 +97,7 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 /* 操作列の幅をしっかり確保（ボタン2つ分） */
 #trade-table th:last-child,
 #trade-table td:last-child {
-  width: 90px;              /* 必要なら 80〜100px で微調整 */
+  width: 65px;              /* 必要なら 80〜100px で微調整 */
 }
 
 /* 操作列の中でボタンを横並び・中央揃え */
@@ -118,4 +118,5 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
   border-radius: 4px;
   white-space: nowrap;      /* ボタンの中で改行しない */
 }
+
 
