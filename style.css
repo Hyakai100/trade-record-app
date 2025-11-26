@@ -130,15 +130,16 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 
 /* 基本サイズ（スマホなど縦長画面） */
 th, td {
-  font-size: 8px;         /* ← スマホ用の小さい文字 */
+  font-size: 6px;         /* ← スマホ用の小さい文字 */
 }
 
 /* 横幅が 600px 以上（PC / 横向きタブレット）で大きく */
 @media (min-width: 600px) {
   th, td {
-    font-size: 12px;       /* ← 横長画面では見やすく */
+    font-size: 10px;       /* ← 横長画面では見やすく */
   }
 }
+
 
 
 
