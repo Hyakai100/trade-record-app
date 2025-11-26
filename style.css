@@ -88,41 +88,42 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
   width: 10%;
 }
 
-/* 操作ボタン列 */
-th:nth-child(10), td:nth-child(10) { /* 操作 */
-  width: 10%;
-}
-
-
-/* 操作列の幅（ボタン2つが縦に入る最小サイズ） */
+/* 縦長（狭い）画面では 10% を確保 */
 #trade-table th:last-child,
 #trade-table td:last-child {
-  width: 60px;
+  width: 10%;
+  min-width: 40px;      /* 極端に縮まないよう保険として */
 }
 
-/* 操作列のセル内レイアウト：ボタンを縦並び＋中央揃え */
+/* 操作列のボタン縦並び */
 #trade-table td:last-child {
   display: flex;
-  flex-direction: column;   /* ← 縦並びにするポイント */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2px;                 /* ボタン同士の縦の間隔 */
+  gap: 2px;
   padding: 2px;
   box-sizing: border-box;
 }
 
-/* 記録一覧テーブル内のボタン（編集・削除）だけに適用 */
+/* 操作列内の小型ボタン */
 #trade-table td:last-child button {
-  width: 100%;              /* セルの中で横位置をそろえる */
-  margin-top: 0;            /* 共通の margin-top:8px を打ち消す */
+  width: 100%;
   padding: 1px 0;
+  margin-top: 0;
   font-size: 8px;
   line-height: 1.1;
   border-radius: 3px;
   white-space: nowrap;
 }
 
-
+/* 横長画面（600px以上）では60px固定に戻す */
+@media (min-width: 600px) {
+  #trade-table th:last-child,
+  #trade-table td:last-child {
+    width: 60px;
+  }
+}
 
 /* ---------------------------------------
    記録一覧の文字サイズ（横長画面で 12px）
@@ -133,12 +134,7 @@ th, td {
   font-size: 6px;         /* ← スマホ用の小さい文字 */
 }
 
-/* 横幅が 600px 以上（PC / 横向きタブレット）で大きく */
-@media (min-width: 600px) {
-  th, td {
-    font-size: 10px;       /* ← 横長画面では見やすく */
-  }
-}
+
 
 
 
