@@ -47,7 +47,7 @@ table {
 th, td {
   border: 1px solid #ddd;
   padding: 6px;
-  font-size: 12px;
+  font-size: 8px;
   text-align: center;
   word-break: break-all;    /* ★ 狭い画面でもはみ出さないように */
 }
@@ -92,4 +92,5 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
 th:nth-child(10), td:nth-child(10) { /* 操作 */
   width: 10%;
 }
+
 
