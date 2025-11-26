@@ -93,12 +93,22 @@ th:nth-child(10), td:nth-child(10) { /* 操作 */
   width: 10%;
 }
 
-/* 記録一覧テーブル内のボタン（編集・削除） */
+/* 操作ボタンを横並び・中央に揃える */
+#trade-table td:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 4px;         /* ボタンの間隔 */
+  padding: 4px;     /* 余白を適度に調整 */
+}
+
+/* ボタンを小型化 */
 #trade-table button {
-  padding: 2px 6px;    /* ボタンの中の余白を減らす */
-  font-size: 10px;     /* 文字サイズを小さく */
+  padding: 1px 4px;
+  font-size: 10px;
   line-height: 1.2;
   border-radius: 4px;
+  height: 12px;     /* 高さを固定して完全に揃える */
 }
+
 
 
